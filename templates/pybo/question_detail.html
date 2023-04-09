@@ -1,0 +1,41 @@
+{% extends "base.html" %} {% block content %}
+<!-- {% load static %}
+<link rel="stylesheet" href="{% static 'pybo/question_detail.css' %}" /> -->
+<div class="container my-3">
+    <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+    <div class="card my-3">
+        <div class="card-header">질문</div>
+        <div class="card-body">
+            <div class="card-text">{{ question.content }}</div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2">{{ question.created_at }}</div>
+            </div>
+        </div>
+    </div>
+
+    <h5 class="border-bottom my-3 py-2">{{ question.answers.count }}개의 답변이 있습니다.</h5>
+    {% for answer in question.answers.all %}
+    <div class="card my-3">
+        <div class="card-header">답변</div>
+        <div class="card-body">
+            <div class="card-text align-top">{{ answer.content }}</div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2">{{ answer.created_at }}</div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+
+    <form action="{% url 'pybo:create_answer' question.question_id %}" method="POST" class="my-3">
+        {% csrf_token %}
+        <!-- 오류 표시 시작-->
+        {% include "form_errors.html" %}
+        <div class="mb-3">
+            <label for="content" class="form-label">답변내용</label>
+            <textarea name="content" id="content" class="form-control" rows="10"></textarea>
+        </div>
+        <input type="submit" value="답변등록" class="btn btn-primary" />
+    </form>
+</div>
+
+{% endblock %}
