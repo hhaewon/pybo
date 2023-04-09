@@ -1,5 +1,6 @@
 {
     "reportIncompatibleVariableOverride": "none",
     "reportIncompatibleMethodOverride": "none",
-    "reportUnknownMemberType": "none"
+    "reportUnknownMemberType": "none",
+    "reportGeneralTypeIssues": "none"
 }

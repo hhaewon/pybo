@@ -1,18 +1,40 @@
 from django.urls import path
 
-from . import views
+from .views import base_views, question_views, answer_views
 
 app_name = "pybo"
 
 urlpatterns = [
-    path("", views.QuestionListView.as_view(), name="index"),
+    path("", base_views.QuestionListView.as_view(), name="index"),
+    path("<int:question_id>/", base_views.QuestionDetailView.as_view(), name="detail"),
     path(
-        "questions/<int:question_id>", views.QuestionDetailView.as_view(), name="detail"
+        "questions/create/",
+        question_views.QuestionCreateView.as_view(),
+        name="create_question",
     ),
     path(
-        "questions/<int:question_id>/answers",
-        views.CreateAnswerView.as_view(),
+        "questions/modify/<int:question_id>",
+        question_views.QuestionUpdateView.as_view(),
+        name="modify_question",
+    ),
+    path(
+        "question/delete/<int:question_id>",
+        question_views.QuestionDeleteView.as_view(),
+        name="delete_question",
+    ),
+    path(
+        "answers/create/<int:question_id>/",
+        answer_views.AnswerCreateView.as_view(),
         name="create_answer",
     ),
-    path("questions", views.CreateQuestionView.as_view(), name="create_question"),
+    path(
+        "answer/modify/<int:answer_id>",
+        answer_views.AnswerModifyView.as_view(),
+        name="modify_answer",
+    ),
+    path(
+        "answer/delete/<int:answer_id>/",
+        answer_views.AnswerDeleteView.as_view(),
+        name="delete_answer",
+    ),
 ]
