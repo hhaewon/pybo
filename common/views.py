@@ -3,11 +3,13 @@ from django.http import HttpRequest
 from django.shortcuts import render, redirect
 from django.views import View
 
-from .forms import UserForm
+from common.forms import UserForm
 
 
 class SignUpView(View):
-    template_name = "common/signup.html"
+    def get(self, request: HttpRequest):
+        form = UserForm()
+        return render(request, "common/signup.html", {"form": form})
 
     def post(self, request: HttpRequest):
         form = UserForm(request.POST)
@@ -15,19 +17,6 @@ class SignUpView(View):
             form.save()
             username = form.cleaned_data.get("username")
             raw_password = form.cleaned_data.get("password1")
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
+            user = authenticate(username=username, password=raw_password)  # 사용자 인증
+            login(request, user)  # 로그인
             return redirect("index")
-        else:
-            form = UserForm()
-            context = {"form": form}
-            return render(
-                request=request, template_name=self.template_name, context=context
-            )
-
-    def get(self, request: HttpRequest):
-        form = UserForm()
-        context = {"form": form}
-        return render(
-            request=request, template_name=self.template_name, context=context
-        )
