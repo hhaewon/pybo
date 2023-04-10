@@ -1,5 +1,7 @@
 from typing import Any
+
 from django.views.generic import ListView, DetailView
+from django.db.models import Q
 
 from ..models import Question
 
@@ -18,7 +20,25 @@ class QuestionListView(ListView):
             page.number, on_each_side=3, on_ends=0
         )
         context["pagelist"] = pagelist
+        context["page"] = self.request.GET.get("page", "1")
+        context["kw"] = self.request.GET.get("kw", "")
         return context
+
+    def get_queryset(self):
+        kw = self.request.GET.get("kw", "")
+
+        question_list = Question.objects.order_by("-created_at")
+        print(kw)
+        if kw:
+            question_list = question_list.filter(
+                Q(subject__icontains=kw)
+                | Q(content__icontains=kw)  # 제목 검색
+                | Q(question_answer__content__icontains=kw)  # 내용 검색
+                | Q(question_answer__content__icontains=kw)  # 답변 내용 검색
+                | Q(question_answer__content__icontains=kw)  # 질문 글쓴이 검색  # 답변 글쓴이 검색
+            ).distinct()
+            return question_list
+        return question_list
 
 
 class QuestionDetailView(DetailView):

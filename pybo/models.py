@@ -6,12 +6,17 @@ from django.contrib.auth.models import User
 
 
 class Question(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="author_question"
+    )
     subject = models.CharField(max_length=200)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     question_id = models.AutoField(primary_key=True)
+    voter: models.ManyToManyField[User, Question] = models.ManyToManyField(
+        User, related_name="voter_question"
+    )
     answers: models.QuerySet[Answer]
 
     class Meta:
@@ -27,14 +32,19 @@ class Question(models.Model):
 
 
 class Answer(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name="author_answer"
+    )
     question = models.ForeignKey(
-        Question, on_delete=models.CASCADE, related_name="answers"
+        Question, on_delete=models.CASCADE, related_name="question_answer"
     )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     answer_id = models.AutoField(primary_key=True)
+    voter: models.ManyToManyField[User, Answer] = models.ManyToManyField(
+        User, related_name="voter_answer"
+    )
 
     class Meta:
         verbose_name = "answer"

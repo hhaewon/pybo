@@ -2,7 +2,7 @@ from typing import cast
 from functools import partial
 
 from django.http import HttpRequest
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render, get_object_or_404, resolve_url
 from django.views import View
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
@@ -25,7 +25,8 @@ class AnswerCreateView(View):
             answer.question = question
             answer.author = cast(User, request.user)
             answer.save()
-            return redirect("pybo:detail", question_id=question_id)
+            url = resolve_url("pybo:detail", question_id=question.question_id)
+            return redirect(f"{url}#answer_{answer.answer_id}")
         else:
             context = {"question": question, "form": form}
             return render(
@@ -51,13 +52,15 @@ class AnswerModifyView(View):
         answer = get_object_or_404(Answer, pk=answer_id)
         if request.user != answer.author:
             messages.error(request, "수정권한이 없습니다")
-            return redirect("pybo:detail", question_id=answer.question.question_id)
+            url = resolve_url("pybo:detail", question_id=answer.question_id)
+            return redirect(f"{url}#answer_{answer.answer_id}")
 
         form = AnswerForm(request.POST, instance=answer)
         if form.is_valid():
             answer = form.save(commit=False)
             answer.save()
-            return redirect("pybo:detail", question_id=answer.question.question_id)
+            url = resolve_url("pybo:detail", question_id=answer.question_id)
+            return redirect(f"{url}#answer_{answer.answer_id}")
 
     def get(self, request: HttpRequest, answer_id: int):
         answer = get_object_or_404(Answer, pk=answer_id)
@@ -77,3 +80,16 @@ class AnswerDeleteView(View):
         else:
             answer.delete()
         return redirect("pybo:detail", question_id=answer.question.question_id)
+
+
+@method_decorator(partial(login_required, login_url="common:login"), name="dispatch")
+class AnswerVoteView(View):
+    def get(self, request: HttpRequest, answer_id: int):
+        answer = get_object_or_404(Answer, pk=answer_id)
+
+        if request.user == answer.author:
+            messages.error(request, "본인이 작성한 글은 추천할수 없습니다")
+        else:
+            answer.voter.add(request.user)
+        url = resolve_url("pybo:detail", question_id=answer.question_id)
+        return redirect(f"{url}#answer_{answer.answer_id}")

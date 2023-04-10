@@ -8,6 +8,8 @@
         <title>Pybo</title>
         <link rel="stylesheet" href="{% static 'bootstrap.min.css' %}" />
         <script defer src="{% static 'bootstrap.min.js' %}"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css" />
+        <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
     </head>
     <body>
         {% block script %} {% endblock %} {% include "navbar.html" %} {% block content %} {% endblock %}

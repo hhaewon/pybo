@@ -23,6 +23,11 @@ urlpatterns = [
         name="delete_question",
     ),
     path(
+        "question/vote/<int:question_id>/",
+        question_views.QuestionVoteView.as_view(),
+        name="question_vote",
+    ),
+    path(
         "answers/create/<int:question_id>/",
         answer_views.AnswerCreateView.as_view(),
         name="create_answer",
@@ -36,5 +41,10 @@ urlpatterns = [
         "answer/delete/<int:answer_id>/",
         answer_views.AnswerDeleteView.as_view(),
         name="delete_answer",
+    ),
+    path(
+        "answer/vote/<int:answer_id>/",
+        answer_views.AnswerVoteView.as_view(),
+        name="answer_vote",
     ),
 ]
