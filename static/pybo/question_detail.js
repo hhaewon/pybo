@@ -15,3 +15,6 @@ recommend_elements.forEach(function (element) {
         }
     });
 });
+
+const contentTextarea = document.querySelector("#content");
+let simplemde = new SimpleMDE({element: contentTextarea});

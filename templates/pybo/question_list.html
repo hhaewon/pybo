@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% load pybo_filter %} {% block content %}
+{% extends 'base.html' %} {% load pybo_filter %} {% load static %} {% block content %}
 <div class="container my-3">
     <div class="row my-3">
         <div class="col-6">
@@ -84,6 +84,6 @@
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}" />
     <input type="hidden" id="page" name="page" value="{{ page }}" />
 </form>
-{% endblock %} {% block script %} {% load static %}
+{% endblock %} {% block script %}
 <script defer type="text/javascript" src="{% static 'pybo/question_list.js' %}"></script>
 {% endblock %}

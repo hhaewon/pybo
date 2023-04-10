@@ -1,4 +1,4 @@
-{% extends 'base.html' %} {% block content %}
+{% extends 'base.html' %} {% load static %}{% block content %}
 <!-- 답변 수정-->
 <div class="container my-3">
     <form method="post">
@@ -10,4 +10,6 @@
         <button type="submit" class="btn btn-primary">저장하기</button>
     </form>
 </div>
-{% endblock %}
+{% endblock %} {% block script %}
+<script defer type="text/javascript" src="{% static 'pybo/answer_form.js' %}"></script>
+{% endblock script %}
