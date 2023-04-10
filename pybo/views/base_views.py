@@ -1,7 +1,7 @@
 from typing import Any
 
 from django.views.generic import ListView, DetailView
-from django.db.models import Q
+from django.db.models import Q, Count
 
 from ..models import Question
 
@@ -22,10 +22,12 @@ class QuestionListView(ListView):
         context["pagelist"] = pagelist
         context["page"] = self.request.GET.get("page", "1")
         context["kw"] = self.request.GET.get("kw", "")
+        context["so"] = self.request.GET.get("so", "recent")
         return context
 
     def get_queryset(self):
         kw = self.request.GET.get("kw", "")
+        so = self.request.GET.get("so", "recent")
 
         question_list = Question.objects.order_by("-created_at")
         print(kw)
@@ -37,7 +39,18 @@ class QuestionListView(ListView):
                 | Q(question_answer__content__icontains=kw)  # 답변 내용 검색
                 | Q(question_answer__content__icontains=kw)  # 질문 글쓴이 검색  # 답변 글쓴이 검색
             ).distinct()
-            return question_list
+
+        if so == "recent":
+            question_list = question_list.order_by("-created_at")
+        elif so == "recommend":
+            question_list = question_list.annotate(
+                num_voter=Count("voter", distinct=True),
+            ).order_by("-num_voter", "-created_at")
+        elif so == "popular":
+            question_list = question_list.annotate(
+                num_answer=Count("question_answer", distinct=True),
+            ).order_by("-num_answer", "-created_at")
+
         return question_list
 
 

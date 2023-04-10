@@ -14,10 +14,15 @@
         </div>
     </div>
     <h1 class="py-2 text-center">Pybo 입니다.</h1>
+    <div id="ordering" class="btn-group mb-2" role="group">
+        <button type="button" title="최신순" class="btn btn-sm btn-secondary so {% if so == 'recent' %}active{% endif %}" data-so="recent">최신순</button>
+        <button type="button" title="추천순" class="btn btn-sm btn-secondary so {% if so == 'recommend' %}active{% endif %}" data-so="recommend">추천순</button>
+        <button type="button" title="인기순" class="btn btn-sm btn-secondary so {% if so == 'popular' %}active{% endif %}" data-so="popular">인기순</button>
+    </div>
     <table class="table">
         <thead>
             <tr class="table-dark text-center">
-                <th>번호</th>
+                <th>추천</th>
                 <th style="width: 50%">제목</th>
                 <th>글쓴이</th>
                 <th>작성일시</th>
@@ -26,7 +31,9 @@
         <tbody>
             {% if page_obj %} {% for question in page_obj %}
             <tr class="text-center">
-                <td>{{ page_obj.paginator.count |sub:page_obj.start_index |sub:forloop.counter0 |add:1 }}</td>
+                <td class="align-middle">
+                    <span class="badge bg-warning text-black">{{ question.voter.count }}</span>
+                </td>
                 <td class="text-start">
                     <a href="{{ question.get_absolute_url }}"> {{ question.subject }} </a>
                     {% if question.question_answer.count > 0 %}
@@ -82,6 +89,7 @@
 </div>
 <form id="searchForm" method="get" action="{% url 'index' %}">
     <input type="hidden" id="kw" name="kw" value="{{ kw|default_if_none:'' }}" />
+    <input type="hidden" id="so" name="so" value="{{ so|default_if_none:'recent' }}" />
     <input type="hidden" id="page" name="page" value="{{ page }}" />
 </form>
 {% endblock %} {% block script %}
