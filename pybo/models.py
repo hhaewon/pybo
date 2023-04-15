@@ -17,6 +17,7 @@ class Question(models.Model):
     voter: models.ManyToManyField[User, Question] = models.ManyToManyField(
         User, related_name="voter_question"
     )
+    views = models.IntegerField(default=0)
     answers: models.QuerySet[Answer]
 
     class Meta:
@@ -52,3 +53,15 @@ class Answer(models.Model):
 
     def get_absolute_url(self):
         return reverse("answer_detail", args=[self.answer_id])
+
+
+class Comment(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    comment_id = models.AutoField(primary_key=True)
+    question = models.ForeignKey(
+        Question, null=True, blank=True, on_delete=models.CASCADE
+    )
+    answer = models.ForeignKey(Answer, null=True, blank=True, on_delete=models.CASCADE)

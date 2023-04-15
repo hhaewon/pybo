@@ -12,8 +12,13 @@
         <script src="{% static 'simplemde.min.js' %}"></script>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/default.min.css" />
         <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+        <link rel="stylesheet" href="{% static 'pybo/all.css' %}">
     </head>
     <body>
-        {% block script %} {% endblock %} {% block style %} {% endblock %} {% include "navbar.html" %} {% block content %} {% endblock %}
+        {% block script %} {% endblock %}
+        {% block style %} {% endblock %}
+        {% include "navbar.html" %}
+        {% block content %} {% endblock %}
+        
     </body>
 </html>

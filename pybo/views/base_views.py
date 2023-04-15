@@ -1,6 +1,8 @@
-from typing import Any
+from typing import Any, Optional, cast
+from django.http import HttpRequest, HttpResponse
 
 from django.views.generic import ListView, DetailView
+from django.db import models
 from django.db.models import Q, Count
 
 from ..models import Question
@@ -57,3 +59,11 @@ class QuestionListView(ListView):
 class QuestionDetailView(DetailView):
     model = Question
     pk_url_kwarg = "question_id"
+
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        question = Question.objects.get(question_id=kwargs.get("question_id"))
+        print(question)
+        question.views += 1
+        question.save()
+        print(question.views)
+        return super().get(request, *args, **kwargs)

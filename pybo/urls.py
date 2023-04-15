@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import base_views, question_views, answer_views
+from .views import base_views, question_views, answer_views, comment_views
 
 app_name = "pybo"
 
@@ -46,5 +46,35 @@ urlpatterns = [
         "answer/vote/<int:answer_id>/",
         answer_views.AnswerVoteView.as_view(),
         name="answer_vote",
+    ),
+    path(
+        "comment/create/question/<int:question_id>/",
+        comment_views.CommentCreateQuestionView.as_view(),
+        name="comment_create_question",
+    ),
+    path(
+        "comment/modify/question/<int:comment_id>/",
+        comment_views.CommentModifyQuestionView.as_view(),
+        name="comment_modify_question",
+    ),
+    path(
+        "comment/delete/question/<int:comment_id>/",
+        comment_views.CommentDeleteQuestionView.as_view(),
+        name="comment_delete_question",
+    ),
+    path(
+        "comment/create/answer/<int:answer_id>/",
+        comment_views.CommentCreateAnswerView.as_view(),
+        name="comment_create_answer",
+    ),
+    path(
+        "comment/modify/answer/<int:comment_id>/",
+        comment_views.CommentModifyAnswerView.as_view(),
+        name="comment_modify_answer",
+    ),
+    path(
+        "comment/delete/answer/<int:comment_id>/",
+        comment_views.CommentDeleteAnswerView.as_view(),
+        name="comment_delete_answer",
     ),
 ]

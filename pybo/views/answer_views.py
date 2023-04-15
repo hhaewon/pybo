@@ -52,14 +52,14 @@ class AnswerModifyView(View):
         answer = get_object_or_404(Answer, pk=answer_id)
         if request.user != answer.author:
             messages.error(request, "수정권한이 없습니다")
-            url = resolve_url("pybo:detail", question_id=answer.question_id)
+            url = resolve_url("pybo:detail", question_id=answer.question.question_id)
             return redirect(f"{url}#answer_{answer.answer_id}")
 
         form = AnswerForm(request.POST, instance=answer)
         if form.is_valid():
-            answer = form.save(commit=False)
+            answer = cast(Answer, form.save(commit=False))
             answer.save()
-            url = resolve_url("pybo:detail", question_id=answer.question_id)
+            url = resolve_url("pybo:detail", question_id=answer.question.question_id)
             return redirect(f"{url}#answer_{answer.answer_id}")
 
     def get(self, request: HttpRequest, answer_id: int):
@@ -91,5 +91,5 @@ class AnswerVoteView(View):
             messages.error(request, "본인이 작성한 글은 추천할수 없습니다")
         else:
             answer.voter.add(request.user)
-        url = resolve_url("pybo:detail", question_id=answer.question_id)
+        url = resolve_url("pybo:detail", question_id=answer.question.question_id)
         return redirect(f"{url}#answer_{answer.answer_id}")
