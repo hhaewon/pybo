@@ -20,3 +20,5 @@ class SignUpView(View):
             user = authenticate(username=username, password=raw_password)  # 사용자 인증
             login(request, user)  # 로그인
             return redirect("index")
+        else:
+            return render(request, "common/signup.html", {"form": form})
